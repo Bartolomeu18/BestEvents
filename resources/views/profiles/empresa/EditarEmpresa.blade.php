@@ -5,13 +5,13 @@
     <div class="w-full max-w-md ">
         <!-- Header do Formulário -->
         <div class="text-center mb-8">
-            <h2 class="text-3xl font-bold text-slate-900 mb-2">Crie sua Conta</h2>
-            <p class="text-slate-600">crie uma para conta para a sua empresa e crie os melhores Eventos</p>
+            <h2 class="text-3xl font-bold text-slate-900 mb-2">Editar dados da Empresa</h2>
+            <p class="text-slate-600">Editar dados da conta e crie os melhores Eventos</p>
         </div>
 
         <!-- Card do Formulário -->
         <div class="bg-white rounded-xl shadow-lg p-8">
-            <form method="POST" action="{{ Route('cadastrondo-empresa') }}" enctype="multipart/form-data" class="space-y-5">
+            <form method="POST" action="{{ Route('empresa-update',['id' => $empresa->id]) }}" class="space-y-5">
                 @csrf
                    @if(session('error'))
                  <span class="text-red-500 text-sm mt-1">{{session('error')}}</span>
@@ -26,9 +26,8 @@
                         type="text" 
                         id="name" 
                         name="nome" 
-                        value="{{ old('nome') }}"
+                        value="{{ old('nome',$empresa->nome) }}"
                         placeholder="Espaço Eventos"
-                        required
                         class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition placeholder-slate-400"
                     >
                     @error('nome')
@@ -45,9 +44,8 @@
                         type="email" 
                         id="email" 
                         name="email" 
-                        value="{{ old('email') }}"
+                        value="{{ old('email',$empresa->email) }}"
                         placeholder="EspacoEventos@email.com"
-                        required
                         class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition placeholder-slate-400"
                     >
                     @error('email')
@@ -64,7 +62,7 @@
                         type="text" 
                         id="nif" 
                         name="nif" 
-                        value="{{ old('nif') }}"
+                        value="{{ old('nif', $empresa->nif) }}"
                         placeholder="123456789AB"
                         class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition placeholder-slate-400"
                     >
@@ -82,9 +80,8 @@
                         type="tel" 
                         id="telefone" 
                         name="telefone" 
-                        value="{{ old('telefone') }}"
+                        value="{{ old('telefone',$empresa->telefone) }}"
                         placeholder="+244 923 456 789"
-                        required
                         class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition placeholder-slate-400"
                     >
                     @error('telefone')
@@ -117,7 +114,6 @@
                         id="password" 
                         name="password" 
                         placeholder="Mínimo 8 caracteres"
-                        required
                         class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition placeholder-slate-400"
                     >
                     @error('password')
@@ -125,7 +121,7 @@
                     @enderror
                 </div>
 
-                <!-- Checkbox Termos -->
+                <!-- Checkbox Termos
                 <div class="flex items-start">
                     <input 
                         type="checkbox" 
@@ -137,18 +133,18 @@
                     <label for="terms" class="ml-2 text-sm text-slate-600">
                         Concordo com os <a href="#" class="text-indigo-600 hover:text-indigo-700 font-semibold">Termos de Serviço</a>
                     </label>
-                </div>
+                </div> -->
 
                 <!-- Botão Cadastrar -->
                 <button 
                     type="submit" 
                     class="w-full mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition duration-200 transform hover:scale-105"
                 >
-                    Criar Conta
+                    Editar Conta
                 </button>
             </form>
 
-            <!-- Link para Login -->
+            <!-- Link para Login 
             <div class="mt-6 text-center">
                 <p class="text-slate-600">
                     Já tem uma conta? 
@@ -156,13 +152,14 @@
                         Faça login aqui
                     </a>
                 </p>
-            </div>
+            </div>--> 
+         <!-- Footer Adicional -->
+        <div class="mt-6 text-center text-slate-300 text-sm">
+            <p>Precisa de ajuda? <a href="#" class="text-indigo-500 hover:text-indigo-800">Contate-nos</a></p>
+        </div>
         </div>
 
-        <!-- Footer Adicional -->
-        <div class="mt-6 text-center text-slate-200 text-sm">
-            <p>Precisa de ajuda? <a href="#" class="text-indigo-200 hover:text-indigo-300">Contate-nos</a></p>
-        </div>
+
     </div>
 </div>
 @endsection

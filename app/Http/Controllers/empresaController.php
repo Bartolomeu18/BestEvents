@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\empresa;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\auth;
 class empresaController extends Controller
 {
     /**
@@ -11,7 +14,8 @@ class empresaController extends Controller
      */
     public function index()
     {
-        //
+       $empresa = auth('empresa')->user();
+       return view('profiles.empresa.index', compact('empresa'));
     }
 
     /**
@@ -27,27 +31,37 @@ class empresaController extends Controller
      */
     public function store(Request $request)
     {
-        $request->file('logo')->getClientOriginalName();
-        
-        $validations = $request->validate([
-            'name' => 'required|min:5',
-            'email' => 'required|email',
-            'password' => 'required|min:7',
-            'Bi' => 'required|min:15|max:15',
-            'telefone' => 'required|min:9',
-            'logo' => 'image',
+        // Validar dados de entrada
+        $validations =        $request->validate([
+            'nome' => 'required|string|min:5|max:255',
+            'email' => 'required|string|email|max:255|unique:empresas',
+            'password' => 'required|string|min:7',
+            'nif' => 'nullable|string|max:20',
+            'telefone' => 'required|string|min:9|max:20',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
-       
 
-    try {
-    empresa::create($validations);
-    return redirect()->route( 'login')->with('sucess','usuário cadastrado com sucesso');
+        try {
+            // Processar arquivo de logo se enviado
+            if ($request->hasFile('logo') && $request->file('logo')->isValid()) {
+                $logo = $request->file('logo');
+                $filename = time() . '_' . uniqid() . '.' . $logo->getClientOriginalExtension();
+                $path = $logo->storeAs('logos', $filename, 'public');
+                $validations['logo'] = $path;
+            }
 
-    } catch (\Throwable $th) {
+            // Hash da senha antes de salvar
+            $validations['password'] = hash::make($validations['password']);
 
-    return redirect()->back()->with('Error','usuário não cadastrado! ');
+           
 
-    }
+            empresa::create($validations);
+            return  redirect()->route( 'login')->with('sucess','usuário cadastrado com sucesso');
+
+        } catch (\Exception $th) {
+            return redirect()->back()
+                ->with('error', 'Erro ao cadastrar: ' . $th->getMessage());
+        }
     }
 
     /**
@@ -55,7 +69,7 @@ class empresaController extends Controller
      */
     public function show(string $id)
     {
-        //
+       //
     }
 
     /**
@@ -63,7 +77,9 @@ class empresaController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $empresa = empresa::findOrFail($id);
+
+        return  view('profiles.empresa.EditarEmpresa',compact('empresa'));
     }
 
     /**
@@ -71,14 +87,55 @@ class empresaController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
-    }
+        $empresa = empresa::findOrFail($id);
+           // Validar dados de entrada
+        $validations =        $request->validate([
+            'nome' => 'string|min:5|max:255',
+            'email' =>[ 'string','email',Rule::unique('empresas')->ignore($id)],
+            'password' => 'string|min:7',
+            'nif' => 'string|max:20',
+            'telefone' => 'string|min:9|max:20',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+             try {
+            // Processar arquivo de logo se enviado
+            if ($request->hasFile('logo') && $request->file('logo')->isValid()) {
+                $logo = $request->file('logo');
+                $filename = time() . '_' . uniqid() . '.' . $logo->getClientOriginalExtension();
+                $path = $logo->storeAs('logos', $filename, 'public');
+                $validations['logo'] = $path;
+            }
+
+            // Hash da senha antes de salvar
+            $validations['password'] = hash::make($validations['password']);
+
+            $empresa->update($validations);
+            return  redirect()->route( 'empresa-index')->with('sucess','usuário cadastrado com sucesso');
+
+        } catch (\Exception $th) {
+            return redirect()->back()
+                   ->with('error', 'Erro ao cadastrar: ' . $th->getMessage());
+
+            
+           
+        }   
+        }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        //
+        $empresa = empresa::findOrFail($id);
+        $empresa->delete();
+        return redirect()->route('login');
+    }
+
+    public function logout(request $request){
+       auth::logout();
+       $request->session()->invalidate();
+       $request->session()->regenerate();
+        return redirect()->route('login');
     }
 }

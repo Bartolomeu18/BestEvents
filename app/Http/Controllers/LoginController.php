@@ -20,12 +20,20 @@ class LoginController extends Controller
     public function attempt(request $request)
     {
         $credentials = $request->only('email','password');
-       if(auth::attempt($credentials)){
-        $request->session()->regenerate();
-        if (auth::guard('web')) {
+        
+        // Tenta autenticar como usuário (web guard)
+        if(auth::guard('web')->attempt($credentials)){
+            $request->session()->regenerate();
             return redirect()->route('user-index');
         }
-       }
+        
+        // Tenta autenticar como empresa
+        if(auth::guard('empresa')->attempt($credentials)){
+            $request->session()->regenerate();
+            return redirect()->route('empresa-index');
+        }
+        
+        return back()->withErrors(['email' => 'Credenciais inválidas']);
     }
 
     /**

@@ -20,7 +20,11 @@
                 {{ session('error') }}
             </div>
         @endif
-
+        @if (session('sucess'))
+            <div class="bg-green-200 text-green-700 p-3 rounded mb-4">
+                {{ session('sucess') }}
+            </div>
+        @endif
         <form method="POST" action="{{ route('login-attempt') }}">
             @csrf
 
