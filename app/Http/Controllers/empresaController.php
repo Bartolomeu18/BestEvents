@@ -7,6 +7,7 @@ use App\Models\empresa;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\auth;
+use App\Models\Evento;
 class empresaController extends Controller
 {
     /**
@@ -15,7 +16,21 @@ class empresaController extends Controller
     public function index()
     {
        $empresa = auth('empresa')->user();
-       return view('profiles.empresa.index', compact('empresa'));
+      $eventosRecentes= Evento::where('id',$empresa->id)->orderBy('created_at')->get();
+      $eventosCriados =
+    Evento::where('empresa_id', $empresa->id)
+        ->selectRaw('DATE_FORMAT(created_at, "%Y-%m") as mes, COUNT(*) as total')
+        ->groupBy('mes')
+        ->orderBy('mes')
+        ->get();
+        // Transformar dados para o gráfico
+    $dadosGrafico = [
+        'labels' => $eventosCriados->pluck('mes')->toArray(),
+        'dados' => $eventosCriados->pluck('total')->toArray()
+    ];
+    $totalEventos= Evento::where('empresa_id',$empresa->id)->count();
+    $eventosActivo = Evento::where('status',$empresa->status)->count();
+       return view('profiles.empresa.index', compact('empresa','eventosRecentes','dadosGrafico','totalEventos','eventosActivo'));
     }
 
     /**

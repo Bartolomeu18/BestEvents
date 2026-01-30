@@ -21,4 +21,8 @@ class Evento extends Model
             'categoria',
             'status'  
     ];
+
+    public function empresa(){
+       return $this->belongsTo(empresa::class);
+    }
 }

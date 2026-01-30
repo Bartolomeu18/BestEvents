@@ -16,7 +16,7 @@ class EventoController extends Controller
     {
         $empresa = auth('empresa')->user();
         $eventos = Evento::where('empresa_id', $empresa->id)->get();
-        return view('profiles.empresa.eventos.index', compact('eventos', 'empresa'));
+        return view('profiles.empresa.evento.meusEventos', compact('eventos', 'empresa'));
     }
 
     /**
@@ -85,30 +85,34 @@ class EventoController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Evento $evento)
+    public function edit(string $id)
     {
-        return view('profiles.empresa.eventos.edit', compact('evento'));
+        $evento = Evento::findOrFail($id);
+        return  view('profiles.empresa.Evento.EditarEvento', compact('evento'));
+;  
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Evento $evento)
+    public function update(Request $request, $id)
     {
-        $validations = $request->validate([
-            'titulo' => 'string|min:3|max:255',
-            'site' => 'nullable|url',
-            'descrição' => 'string|min:10',
-            'data_inicio' => 'date|after_or_equal:today',
-            'data_fim' => 'nullable|date|after_or_equal:data_inicio',
-            'localização' => 'nullable|string|max:255',
-            'capacidade' => 'nullable|integer|min:1',
-            'imagem_capa' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'categoria' => 'string|max:100',
-            'status' => 'nullable|string|in:ativo,encerrado',
-        ]);
-
         try {
+            $evento = Evento::findOrFail($id);
+            
+            $validations = $request->validate([
+                'titulo' => 'nullable|string|min:3|max:255',
+                'site' => 'nullable|url',
+                'descrição' => 'nullable|string|min:10',
+                'data_inicio' => 'nullable|date|after_or_equal:today',
+                'data_fim' => 'nullable|date|after_or_equal:data_inicio',
+                'localização' => 'nullable|string|max:255',
+                'capacidade' => 'nullable|integer|min:1',
+                'imagem_capa' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'categoria' => 'nullable|string|max:100',
+                'status' => 'nullable|string|in:ativo,encerrado',
+            ]);
+
             // Processar arquivo de imagem de capa se enviado
             if ($request->hasFile('imagem_capa') && $request->file('imagem_capa')->isValid()) {
                 $imagem = $request->file('imagem_capa');
@@ -118,10 +122,12 @@ class EventoController extends Controller
             }
 
             $evento->update($validations);
-            return redirect()->route('evento-index')->with('success', 'Evento atualizado com sucesso!');
+            return  redirect()->route('evento-index')->with('success', 'Evento atualizado com sucesso!');
 
         } catch (\Exception $th) {
+            \Log::error('Erro ao atualizar evento: ' . $th->getMessage());
             return redirect()->back()
+                ->withInput()
                 ->with('error', 'Erro ao atualizar evento: ' . $th->getMessage());
         }
     }
@@ -129,9 +135,10 @@ class EventoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Evento $evento)
+    public function destroy(string $id)
     {
         try {
+            $evento = Evento::findOrFail($id);
             $evento->delete();
             return redirect()->route('evento-index')->with('success', 'Evento removido com sucesso!');
         } catch (\Exception $th) {

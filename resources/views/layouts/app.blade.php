@@ -46,8 +46,8 @@
 
             <!-- Nav Links - Desktop -->
             <div class="hidden md:flex gap-8">
-                <a href="#" class="text-dark hover:text-primary transition">Explorar</a>
-                <a href="#" class="text-dark hover:text-primary transition">Categorias</a>
+                <a href="#explorarnm,.;" class="text-dark hover:text-primary transition">Explorar</a>
+                <a href="#categoria" class="text-dark hover:text-primary transition">Categorias</a>
                 <a href="#" class="text-dark hover:text-primary transition">Contato</a>
             </div>
 

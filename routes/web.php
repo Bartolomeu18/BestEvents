@@ -6,9 +6,11 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\empresaController;
 use App\Http\Controllers\EventoController;
+use App\Models\Evento;
 
 Route::get('/', function () {
-    return view('index');
+    $eventosRecentes= Evento::orderBy('created_at')->get();
+    return view('index',compact('eventosRecentes'));
 });
 
 Route::get('/Login',[LoginController::class,'index'])->name('login');
@@ -35,9 +37,10 @@ Route::middleware(['auth:empresa'])->group(function(){
     Route::get('/Eliminar empresa/{id}',[empresaController::class,'delete'])->name('empresa-delete');
     Route::get('/logout',[empresaController::class,'logout'])->name('empresa-logout');
     #eventos routes 
+    Route::get('/Evento index',[EventoController::class,'index'])->name('evento-index');
     Route::get('/criar Evento',[EventoController::class,'create'])->name('evento-cadastrar');
     Route::post('/cadastrando Evento',[EventoController::class,'store'])->name('evento-store');
     Route::get('/Editar Evento/{id} ',[EventoController::class,'edit'])->name('Evento-edit');
-    Route::post('/Editando Evento/{id} ',[EventoController::class,'update'])->name('Evento-update');
-    Route::get('/Eliminar Evento/{id}',[EventoController::class,'delete'])->name('Evento-delete');
+    Route::put('/Editando Evento/{id} ',[EventoController::class,'update'])->name('Evento-update');
+    Route::get('/Eliminar Evento/{id}',[EventoController::class,'destroy'])->name('Evento-delete');
     });

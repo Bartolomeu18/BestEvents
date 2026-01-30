@@ -24,7 +24,7 @@
 </section>
 
 <!-- Categorias Section -->
-<section class="py-16">
+<section class="py-16" id="categoria">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-3xl font-bold mb-12">Categorias Populares</h2>
         
@@ -49,60 +49,52 @@
 </section>
 
 <!-- Eventos Recentes -->
-<section class="py-16 bg-white">
+<section class="py-16 bg-white" id="explorar">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-3xl font-bold mb-4">Eventos Recentes</h2>
+        <h2 class="text-3xl font-bold mb-4">Explorar Eventos Recentes</h2>
         <p class="text-gray-600 mb-12">Os eventos mais novos e legais da plataforma</p>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            @php
-                $recentEvents = [
-                    [
-                        'title' => 'Festival de Música Eletrônica 2024',
-                        'date' => '15 de Jan',
-                        'location' => 'São Paulo, SP',
-                        'price' => 'R$ 89,90',
-                        'image' => 'url(https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=500&h=300&fit=crop)',
-                        'sales' => '450 vendidos'
-                    ],
-                    [
-                        'title' => 'Workshop: Desenvolvimento Web Moderno',
-                        'date' => '20 de Jan',
-                        'location' => 'Rio de Janeiro, RJ',
-                        'price' => 'R$ 149,90',
-                        'image' => 'url(https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=300&fit=crop)',
-                        'sales' => '120 vendidos'
-                    ],
-                    [
-                        'title' => 'Show de Stand-up Comedy',
-                        'date' => '25 de Jan',
-                        'location' => 'Belo Horizonte, MG',
-                        'price' => 'R$ 59,90',
-                        'image' => 'url(https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500&h=300&fit=crop)',
-                        'sales' => '280 vendidos'
-                    ],
-                ];
-            @endphp
-            
-            @foreach($recentEvents as $event)
-            <div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition transform hover:-translate-y-1">
-                <div 
-                    class="h-48 bg-cover bg-center" 
-                    style="background-image: {{ $event['image'] }}"
-                ></div>
-                <div class="p-6">
-                    <h3 class="font-bold text-lg mb-3">{{ $event['title'] }}</h3>
-                    <div class="space-y-2 text-sm text-gray-600 mb-4">
-                        <p>📅 {{ $event['date'] }}</p>
-                        <p>📍 {{ $event['location'] }}</p>
-                        <p class="text-primary font-semibold">{{ $event['sales'] }}</p>
+            @foreach($eventosRecentes as $evento)
+               <!--  <div class="h-48 bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center">
+                        <span class="text-white text-4xl font-bold">🎵</span>
+                    </div> -->
+                    <img src="{{ asset('storage/' . $evento->imagem_capa) }}" alt="{{ $evento->titulo }}" class="w-full h-48 object-cover">
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-3">
+                            <h3 class="text-lg font-bold text-gray-900">{{ $evento->titulo }}</h3>
+                            <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">{{ $evento->status}}</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">{{ $evento->descrição }}</p>
+                        
+                        <div class="space-y-2 mb-4">
+                            <div class="flex items-center text-sm text-gray-600">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                {{ $evento->data_inicio }}
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                                {{ $evento->localização }}
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                {{ $evento->capacidade }}
+                            </div>
+                        </div>
+
+                        <div class="flex gap-3">
+                       
+                    <a href="https://wa.me/{{ $evento->empresa->telefone}}" target="_blank" class="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition text-sm font-medium">
+                        Contatar
+                    </a> </div>
                     </div>
-                    <div class="flex justify-between items-center pt-4 border-t">
-                        <span class="text-xl font-bold text-primary">{{ $event['price'] }}</span>
-                        <button class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Mais Detalhes</button>
-                    </div>
-                </div>
-            </div>
             @endforeach
         </div>
     </div>

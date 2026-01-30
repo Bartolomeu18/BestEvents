@@ -1,4 +1,4 @@
-@vite( ['resources/css/app.css', 'resources/js/app.js'])
+@vite( ['resources/css/app.css', 'resources/js/app.js', 'resources/js/grafico.js'])
 <div class="flex h-screen bg-gray-50">
     <!-- Sidebar -->
     <div class="w-64 bg-white shadow-lg">
@@ -15,7 +15,7 @@
                 <span class="font-medium">Dashboard</span>
             </a>
 
-            <a href="#" class="flex items-center px-6 py-4 text-gray-600 hover:bg-gray-50">
+            <a href="{{ route('evento-index') }}" class="flex items-center px-6 py-4 text-gray-600 hover:bg-gray-50">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
                 </svg>
@@ -71,7 +71,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-500 text-sm">Total de Eventos</p>
-                            <p class="text-3xl font-bold text-gray-900 mt-2">12</p>
+                            <p class="text-3xl font-bold text-gray-900 mt-2">{{$totalEventos}}</p>
                         </div>
                         <div class="bg-blue-100 rounded-full p-3">
                             <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -98,8 +98,8 @@
                 <div class="bg-white rounded-lg shadow p-6">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-gray-500 text-sm">Receita Total</p>
-                            <p class="text-3xl font-bold text-gray-900 mt-2">R$ 15.2K</p>
+                            <p class="text-gray-500 text-sm">Eventos Activos</p>
+                            <p class="text-3xl font-bold text-gray-900 mt-2">{{$eventosActivo}}</p>
                         </div>
                         <div class="bg-purple-100 rounded-full p-3">
                             <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -128,39 +128,16 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                 <!-- Main Chart -->
                 <div class="lg:col-span-2 bg-white rounded-lg shadow p-6">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-lg font-semibold text-gray-900">Eventos Criados (Últimos 6 Meses)</h2>
-                        <select class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600">
-                            <option>Últimos 6 meses</option>
-                            <option>Últimos 12 meses</option>
-                            <option>Este ano</option>
-                        </select>
+                    <div class="flex justify-between items-center mb-3">
+                        <h2 class="text-lg font-semibold text-gray-900">]
+                            
+                        
+                        
+                        
+                        (Últimos 6 Meses)</h2>
                     </div>
-                    <div class="h-64 flex items-end gap-2">
-                        <div class="flex-1 flex flex-col items-center">
-                            <div class="w-full bg-indigo-600 rounded-t" style="height: 60%"></div>
-                            <p class="text-xs text-gray-500 mt-2">Jan</p>
-                        </div>
-                        <div class="flex-1 flex flex-col items-center">
-                            <div class="w-full bg-indigo-600 rounded-t" style="height: 75%"></div>
-                            <p class="text-xs text-gray-500 mt-2">Fev</p>
-                        </div>
-                        <div class="flex-1 flex flex-col items-center">
-                            <div class="w-full bg-indigo-600 rounded-t" style="height: 45%"></div>
-                            <p class="text-xs text-gray-500 mt-2">Mar</p>
-                        </div>
-                        <div class="flex-1 flex flex-col items-center">
-                            <div class="w-full bg-indigo-600 rounded-t" style="height: 90%"></div>
-                            <p class="text-xs text-gray-500 mt-2">Abr</p>
-                        </div>
-                        <div class="flex-1 flex flex-col items-center">
-                            <div class="w-full bg-indigo-600 rounded-t" style="height: 70%"></div>
-                            <p class="text-xs text-gray-500 mt-2">Mai</p>
-                        </div>
-                        <div class="flex-1 flex flex-col items-center">
-                            <div class="w-full bg-indigo-600 rounded-t" style="height: 85%"></div>
-                            <p class="text-xs text-gray-500 mt-2">Jun</p>
-                        </div>
+                    <div class="h-96 flex items-end gap-2">
+                    <canvas id="meuGrafico"></canvas>
                     </div>
                 </div>
 
@@ -195,7 +172,10 @@
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full">
-                        <thead class="bg-gray-50 border-b border-gray-200">
+               @foreach ($eventosRecentes as $eventoRecente )
+               
+               @endforeach
+                    <thead class="bg-gray-50 border-b border-gray-200">
                             <tr>
                                 <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Nome do Evento</th>
                                 <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Data</th>
@@ -207,36 +187,16 @@
                         </thead>
                         <tbody class="divide-y divide-gray-200">
                             <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Festival de Música 2026</td>
-                                <td class="px-6 py-4 text-sm text-gray-600">25 de Jan</td>
-                                <td class="px-6 py-4 text-sm text-gray-600">142/200</td>
+                                <td class="px-6 py-4 text-sm font-medium text-gray-900">{{$eventoRecente->titulo}}</td>
+                                <td class="px-6 py-4 text-sm text-gray-600">{{$eventoRecente->data_inicio}}</td>
+                                <td class="px-6 py-4 text-sm text-gray-600">{{$eventoRecente->capacidade}}</td>
                                 <td class="px-6 py-4 text-sm text-gray-600">R$ 7.100</td>
-                                <td class="px-6 py-4"><span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">Ativo</span></td>
+                                <td class="px-6 py-4"><span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">{{$eventoRecente->status}}</span></td>
                                 <td class="px-6 py-4 text-sm">
-                                    <button class="text-indigo-600 hover:text-indigo-700 font-medium">Editar</button>
+                                    <a href="{{ route('Evento-edit',['id'=>$eventoRecente->id]) }}" class="text-indigo-600 hover:text-indigo-700 font-medium">Editar</button>
                                 </td>
                             </tr>
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Conferência Tech Summit</td>
-                                <td class="px-6 py-4 text-sm text-gray-600">15 de Fev</td>
-                                <td class="px-6 py-4 text-sm text-gray-600">98/150</td>
-                                <td class="px-6 py-4 text-sm text-gray-600">R$ 4.900</td>
-                                <td class="px-6 py-4"><span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">Ativo</span></td>
-                                <td class="px-6 py-4 text-sm">
-                                    <button class="text-indigo-600 hover:text-indigo-700 font-medium">Editar</button>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Workshop de Design UX</td>
-                                <td class="px-6 py-4 text-sm text-gray-600">10 de Mar</td>
-                                <td class="px-6 py-4 text-sm text-gray-600">67/100</td>
-                                <td class="px-6 py-4 text-sm text-gray-600">R$ 2.010</td>
-                                <td class="px-6 py-4"><span class="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded-full">Planejado</span></td>
-                                <td class="px-6 py-4 text-sm">
-                                    <button class="text-indigo-600 hover:text-indigo-700 font-medium">Editar</button>
-                                </td>
-                            </tr>
-                        </tbody>
+                         </tbody>
                     </table>
                 </div>
             </div>
@@ -286,5 +246,8 @@
             </div>
         </div>
     </div>
+    <script>
+    window.dadosGrafico = @json($dadosGrafico);
+</script>
 </div>
 
